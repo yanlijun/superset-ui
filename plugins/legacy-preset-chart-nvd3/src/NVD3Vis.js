@@ -19,7 +19,6 @@
  */
 import { kebabCase, throttle } from 'lodash';
 import d3 from 'd3';
-import nv from 'nvd3-fork';
 import mathjs from 'mathjs';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -27,9 +26,10 @@ import { isDefined } from '@superset-ui/core';
 import { t } from '@superset-ui/translation';
 import { CategoricalColorNamespace } from '@superset-ui/color';
 import { getNumberFormatter, NumberFormats } from '@superset-ui/number-format';
-import { getTimeFormatter, smartDateVerboseFormatter } from '@superset-ui/time-format';
-import 'nvd3-fork/build/nv.d3.min.css';
+import { getTimeFormatter, smartDateFormatter, smartDateVerboseFormatter } from '@superset-ui/time-format';
 /* eslint-disable-next-line */
+import nv from './nv.d3';
+import './nv.d3.css';
 import ANNOTATION_TYPES, { applyNativeColumns } from './vendor/superset/AnnotationTypes';
 import isTruthy from './utils/isTruthy';
 import {
@@ -64,6 +64,7 @@ import {
   numberOrAutoType,
   stringOrObjectWithLabelType,
 } from './PropTypes';
+import './NVD3Vis.css';
 
 const NO_DATA_RENDER_DATA = [
   { text: 'No data', dy: '-.75em', class: 'header' },
@@ -172,6 +173,7 @@ const propTypes = {
   showMarkers: PropTypes.bool,
   useRichTooltip: PropTypes.bool,
   vizType: PropTypes.oneOf([
+    'line_bar',
     'area',
     'bar',
     'box_plot',
@@ -191,7 +193,7 @@ const propTypes = {
   xAxisLabel: PropTypes.string,
   xAxisShowMinMax: PropTypes.bool,
   xIsLogScale: PropTypes.bool,
-  xTicksLayout: PropTypes.oneOf(['auto', 'staggered', '45°']),
+  xTicksLayout: PropTypes.oneOf(['flat', 'auto', 'staggered', '45°']),
   yAxisFormat: PropTypes.string,
   yAxisBounds: PropTypes.arrayOf(PropTypes.number),
   yAxisLabel: PropTypes.string,
@@ -294,6 +296,7 @@ function nvd3Vis(element, props) {
     yAxisShowMinMax = false,
     yField,
     yIsLogScale,
+    isTimeOnly,
   } = props;
 
   const isExplore = document.querySelector('#explorer-container') !== null;
@@ -333,11 +336,11 @@ function nvd3Vis(element, props) {
       (xTicksLayout === 'auto' && isVizTypes(['column', 'dist_bar'])) || xTicksLayout === '45°'
         ? 45
         : 0;
-    if (xLabelRotation === 45 && isTruthy(showBrush)) {
-      onError(t('You cannot use 45° tick layout along with the time range filter'));
-
-      return null;
-    }
+    // if (xLabelRotation === 45 && isTruthy(showBrush)) {
+    //   onError(t('You cannot use 45° tick layout along with the time range filter'));
+    //
+    //   return null;
+    // }
 
     const canShowBrush =
       isTruthy(showBrush) ||
@@ -368,6 +371,13 @@ function nvd3Vis(element, props) {
         chart.interpolate(lineInterpolation);
         break;
 
+      case 'line_bar':
+        chart = nv.models.linePlusBarChart()
+          .legendRightAxisHint(' 右')
+          .legendLeftAxisHint(' 左')
+          .useInteractiveGuideline(true);
+        break;
+
       case 'dual_line':
       case 'line_multi':
         chart = nv.models.multiChart();
@@ -384,11 +394,20 @@ function nvd3Vis(element, props) {
         chart.width(width);
         chart.xAxis.showMaxMin(false);
         chart.stacked(isBarStacked);
+        if (isBarStacked) {
+          chart.useInteractiveGuideline(true);
+        }
         break;
 
       case 'dist_bar':
-        chart = nv.models
-          .multiBarChart()
+        if (isTimeOnly && canShowBrush) {
+          chart = nv.models.multiBarWithFocusChart();
+          chart.focus.stacked(isBarStacked);
+        } else {
+          chart = nv.models.multiBarChart();
+        }
+
+        chart
           .showControls(showControls)
           .reduceXTicks(reduceXTicks)
           .groupSpacing(0.1); // Distance between each group of bars.
@@ -396,6 +415,9 @@ function nvd3Vis(element, props) {
         chart.xAxis.showMaxMin(false);
 
         chart.stacked(isBarStacked);
+        if (isBarStacked) {
+          chart.useInteractiveGuideline(true);
+        }
         if (orderBars) {
           data.forEach(d => {
             d.values.sort((a, b) => (tryNumify(a.x) < tryNumify(b.x) ? -1 : 1));
@@ -478,7 +500,18 @@ function nvd3Vis(element, props) {
         break;
 
       case 'area':
-        chart = nv.models.stackedAreaChart();
+        if (canShowBrush) {
+          chart = nv.models.stackedAreaWithFocusChart();
+          if (staggerLabels) {
+            // Give a bit more room to focus area if X axis ticks are staggered
+            chart.focus.margin({ bottom: 40 });
+            chart.focusHeight(80);
+          }
+          chart.focus.xScale(d3.time.scale.utc());
+        } else {
+          chart = nv.models.stackedAreaChart();
+        }
+
         chart.showControls(showControls);
         chart.style(areaStackedStyle);
         chart.xScale(d3.time.scale.utc());
@@ -560,6 +593,8 @@ function nvd3Vis(element, props) {
       xAxisFormatter = getTimeFormatter(xAxisFormat);
       // In tooltips, always use the verbose time format
       chart.interactiveLayer.tooltip.headerFormatter(smartDateVerboseFormatter);
+    } else if (vizType === 'line_bar' || (vizType === 'dist_bar' && isTimeOnly)) {
+      xAxisFormatter = xAxisFormat === 'smart_date' ? smartDateFormatter : getTimeFormatter(xAxisFormat);
     } else {
       xAxisFormatter = getTimeOrNumberFormatter(xAxisFormat);
     }
@@ -568,7 +603,7 @@ function nvd3Vis(element, props) {
     }
     if (chart.xAxis && chart.xAxis.tickFormat) {
       const isXAxisString = isVizTypes(['dist_bar', 'box_plot']);
-      if (isXAxisString) {
+      if (isXAxisString && !isTimeOnly) {
         chart.xAxis.tickFormat(d =>
           d.length > MAX_NO_CHARACTERS_IN_LABEL
             ? `${d.slice(0, Math.max(0, MAX_NO_CHARACTERS_IN_LABEL))}…`
@@ -654,6 +689,14 @@ function nvd3Vis(element, props) {
       } else {
         chart.showLegend(showLegend);
       }
+    }
+    if (vizType === 'line_bar') {
+      const yAxisFormatter1 = yAxisFormatter;
+      const yAxisFormatter2 = getTimeOrNumberFormatter(yAxis2Format);
+      chart.y1Axis.tickFormat(yAxisFormatter1);
+      chart.y1Axis.ticks(5);
+      setAxisShowMaxMin(chart.y1Axis, yAxisShowMinMax);
+      chart.y2Axis.tickFormat(yAxisFormatter2);
     }
     // This is needed for correct chart dimensions if a chart is rendered in a hidden container
     chart.width(width);
@@ -764,7 +807,7 @@ function nvd3Vis(element, props) {
       });
     }
 
-    if (chart.yAxis !== undefined || chart.yAxis2 !== undefined) {
+    if (chart.yAxis !== undefined || chart.y1Axis !== undefined || chart.y2Axis !== undefined || chart.yAxis2 !== undefined) {
       // Hack to adjust y axis left margin to accommodate long numbers
       const marginPad = Math.ceil(Math.min(maxWidth * (isExplore ? 0.01 : 0.03), MAX_MARGIN_PAD));
       // Hack to adjust margins to accommodate long axis tick labels.
@@ -776,7 +819,9 @@ function nvd3Vis(element, props) {
       if (chart.xAxis) {
         margins.bottom = 28;
       }
-      const maxYAxisLabelWidth = getMaxLabelSize(svg, chart.yAxis2 ? 'nv-y1' : 'nv-y');
+      // const maxYAxisLabelWidth = getMaxLabelSize(svg, chart.yAxis2 ? 'nv-y1' : 'nv-y');
+      const isY1 = svg.select('.nv-y1')[0] && svg.select('.nv-y1')[0][0];
+      const maxYAxisLabelWidth = getMaxLabelSize(svg, isY1 ? 'nv-y1' : 'nv-y');
       const maxXAxisLabelHeight = getMaxLabelSize(svg, 'nv-x');
       margins.left = maxYAxisLabelWidth + marginPad;
 
@@ -800,7 +845,7 @@ function nvd3Vis(element, props) {
         margins.bottom = 40;
       }
 
-      if (isVizTypes(['dual_line', 'line_multi'])) {
+      if (isVizTypes(['dual_line', 'line_multi', 'line_bar'])) {
         const maxYAxis2LabelWidth = getMaxLabelSize(svg, 'nv-y2');
         margins.right = maxYAxis2LabelWidth + marginPad;
       }
@@ -876,8 +921,8 @@ function nvd3Vis(element, props) {
         .datum(data)
         .transition()
         .duration(500)
-        .attr('width', width)
         .attr('height', height)
+        .attr('width', width)
         .call(chart);
 
       // On scroll, hide (not remove) tooltips so they can reappear on hover.
