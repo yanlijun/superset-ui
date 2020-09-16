@@ -151,7 +151,8 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
       }
       dataType = DataType.DateTime;
     } else if (isMetric) {
-      formatter = getNumberFormatter(format);
+      // formatter = getNumberFormatter(format);
+      formatter = (value: number) => `${Math.round(value * 100) / 100}`;
     } else if (isPercentMetric) {
       // percent metrics have a default format
       formatter = getNumberFormatter(format || PERCENT_3_POINT);
