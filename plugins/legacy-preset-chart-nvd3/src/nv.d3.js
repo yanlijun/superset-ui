@@ -6519,7 +6519,7 @@ nv.models.focus = function(model) {
         .attr('height', availableHeight);
 
       if (showXAxis) {
-        xAxis.scale(x)
+        xAxis
           ._ticks( nv.utils.calcTicksX(availableWidth/100, data) )
           .tickSize(-availableHeight, 0);
 
@@ -6661,7 +6661,8 @@ nv.models.focus = function(model) {
     rightAlignYAxis: {get: function(){return rightAlignYAxis;}, set: function(_){
         rightAlignYAxis = _;
         yAxis.orient( rightAlignYAxis ? 'right' : 'left');
-      }}
+      }},
+    focusXScale:  {get: function(){return x;}, set: function(_){xAxis.scale(_);}},
   });
 
   nv.utils.inheritOptions(chart, content);
@@ -9871,23 +9872,19 @@ nv.models.lineChart = function() {
           return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled; }));
 
-      var linesWrap = g.select('.nv-linesWrap')
-        .datum(data.filter(function(d) { return !d.disabled; }));
-
-
       // Setup Main (Focus) Axes
       if (showXAxis) {
         xAxis
           .scale(x)
-          ._ticks(nv.utils.calcTicksX(availableWidth/100, data) )
+          ._ticks(nv.utils.calcTicksX(availableWidth/100, data))
           .tickSize(-availableHeight, 0);
       }
 
       if (showYAxis) {
         yAxis
           .scale(y)
-          ._ticks( nv.utils.calcTicksY(availableHeight/36, data) )
-          .tickSize( -availableWidth, 0);
+          ._ticks(nv.utils.calcTicksY(availableHeight/36, data))
+          .tickSize(-availableWidth, 0);
       }
 
       //============================================================
@@ -9920,6 +9917,8 @@ nv.models.lineChart = function() {
       // Update Focus
       //============================================================
       if (!focusEnable && focus.brush.extent() === null) {
+        var linesWrap = g.select('.nv-focus .nv-linesWrap')
+          .datum(data.filter(function(d) { return !d.disabled; }));
         linesWrap.transition().call(lines);
         updateXAxis();
         updateYAxis();
@@ -10052,26 +10051,9 @@ nv.models.lineChart = function() {
       //============================================================
       // Functions
       //------------------------------------------------------------
-
-      // Taken from crossfilter (http://square.github.com/crossfilter/)
-      function resizePath(d) {
-        var e = +(d == 'e'),
-          x = e ? 1 : -1,
-          y = availableHeight / 3;
-        return 'M' + (0.5 * x) + ',' + y
-          + 'A6,6 0 0 ' + e + ' ' + (6.5 * x) + ',' + (y + 6)
-          + 'V' + (2 * y - 6)
-          + 'A6,6 0 0 ' + e + ' ' + (0.5 * x) + ',' + (2 * y)
-          + 'Z'
-          + 'M' + (2.5 * x) + ',' + (y + 8)
-          + 'V' + (2 * y - 8)
-          + 'M' + (4.5 * x) + ',' + (y + 8)
-          + 'V' + (2 * y - 8);
-      }
-
       function onBrush(extent) {
         // Update Main (Focus)
-        var focusLinesWrap = g.select('.nv-focus .nv-linesWrap')
+        var linesWrap = g.select('.nv-focus .nv-linesWrap')
           .datum(
             data.filter(function(d) { return !d.disabled; })
               .map(function(d,i) {
@@ -10086,7 +10068,7 @@ nv.models.lineChart = function() {
                 };
               })
           );
-        focusLinesWrap.transition().duration(duration).call(lines);
+        linesWrap.transition().duration(duration).call(lines);
 
         // Update Main (Focus) Axes
         updateXAxis();
@@ -10305,13 +10287,13 @@ nv.models.linePlusBarChart = function() {
     return switchYAxisOrder
       ? { main: y2Axis, focus: y4Axis }
       : { main: y1Axis, focus: y3Axis }
-  }
+  };
 
   var getLinesAxis = function() {
     return switchYAxisOrder
       ? { main: y1Axis, focus: y3Axis }
       : { main: y2Axis, focus: y4Axis }
-  }
+  };
 
   var stateGetter = function(data) {
     return function(){
@@ -10334,7 +10316,7 @@ nv.models.linePlusBarChart = function() {
     return data.every(function(series) {
       return series.disabled;
     });
-  }
+  };
 
   function chart(selection) {
     selection.each(function(data) {
@@ -10412,7 +10394,7 @@ nv.models.linePlusBarChart = function() {
 
       x.range([0, availableWidth]);
 
-      x2  .domain(d3.extent(d3.merge(series1.concat(series2)), function(d) { return d.x } ))
+      x2.domain(d3.extent(d3.merge(series1.concat(series2)), function(d) { return d.x } ))
         .range([0, availableWidth]);
 
       // Setup containers and skeleton of chart
@@ -10532,7 +10514,7 @@ nv.models.linePlusBarChart = function() {
       // context (focus chart) axis controls
       if (focusShowAxisX) {
         x2Axis
-          ._ticks( nv.utils.calcTicksX(availableWidth / 100, data))
+          ._ticks(nv.utils.calcTicksX(availableWidth / 100, data))
           .tickSize(-availableHeight2, 0);
         g.select('.nv-context .nv-x.nv-axis')
           .attr('transform', 'translate(0,' + y3.range()[0] + ')');
@@ -10543,11 +10525,11 @@ nv.models.linePlusBarChart = function() {
       if (focusShowAxisY) {
         y3Axis
           .scale(y3)
-          ._ticks( availableHeight2 / 36 )
-          .tickSize( -availableWidth, 0);
+          ._ticks(availableHeight2 / 36)
+          .tickSize(-availableWidth, 0);
         y4Axis
           .scale(y4)
-          ._ticks( availableHeight2 / 36 )
+          ._ticks(availableHeight2 / 36)
           .tickSize(dataBars.length ? 0 : -availableWidth, 0); // Show the y2 rules only if y1 has none
 
         g.select('.nv-context .nv-y3.nv-axis')
@@ -10900,7 +10882,7 @@ nv.models.linePlusBarChart = function() {
     xScale:  {get: function(){return x;}, set: function(_){
         lines.xScale(_);
         bars.xScale(_);
-        // x2Axis.scale(_);
+        x2Axis.scale(_);
       }},
 
     // options that require extra logic in the setter
@@ -11675,81 +11657,19 @@ nv.models.multiBarChart = function() {
           return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled }));
 
-
-      var barsWrap = g.select('.nv-focus .nv-barsWrap')
-        .datum(data.filter(function(d) { return !d.disabled }));
-
-      barsWrap.call(multibar);
-
       // Setup Axes
       if (showXAxis) {
         xAxis
           .scale(x)
-          ._ticks( nv.utils.calcTicksX(availableWidth/100, data) )
+          ._ticks(nv.utils.calcTicksX(availableWidth/100, data))
           .tickSize(-availableHeight, 0);
-
-        g.select('.nv-x.nv-axis')
-          .attr('transform', 'translate(0,' + y.range()[0] + ')');
-        g.select('.nv-x.nv-axis')
-          .call(xAxis);
-
-        var xTicks = g.select('.nv-x.nv-axis > g').selectAll('g');
-
-        xTicks
-          .selectAll('line, text')
-          .style('opacity', 1)
-
-        if (staggerLabels) {
-          var getTranslate = function(x,y) {
-            return "translate(" + x + "," + y + ")";
-          };
-
-          var staggerUp = 5, staggerDown = 17;  //pixels to stagger by
-          // Issue #140
-          xTicks
-            .selectAll("text")
-            .attr('transform', function(d,i,j) {
-              return  getTranslate(0, (j % 2 == 0 ? staggerUp : staggerDown));
-            });
-
-          var totalInBetweenTicks = d3.selectAll(".nv-x.nv-axis .nv-wrap g g text")[0].length;
-          g.selectAll(".nv-x.nv-axis .nv-axisMaxMin text")
-            .attr("transform", function(d,i) {
-              return getTranslate(0, (i === 0 || totalInBetweenTicks % 2 !== 0) ? staggerDown : staggerUp);
-            });
-        }
-
-        if (wrapLabels) {
-          g.selectAll('.tick text')
-            .call(nv.utils.wrapTicks, chart.xAxis.rangeBand())
-        }
-
-        if (reduceXTicks)
-          xTicks
-            .filter(function(d,i) {
-              return i % Math.ceil(data[0].values.length / (availableWidth / 100)) !== 0;
-            })
-            .selectAll('text, line')
-            .style('opacity', 0);
-
-        if(rotateLabels)
-          xTicks
-            .selectAll('.tick text')
-            .attr('transform', 'rotate(' + rotateLabels + ' 0,0)')
-            .style('text-anchor', rotateLabels > 0 ? 'start' : 'end');
-
-        g.select('.nv-x.nv-axis').selectAll('g.nv-axisMaxMin text')
-          .style('opacity', 1);
       }
 
       if (showYAxis) {
         yAxis
           .scale(y)
-          ._ticks( nv.utils.calcTicksY(availableHeight/36, data) )
-          .tickSize( -availableWidth, 0);
-
-        g.select('.nv-y.nv-axis')
-          .call(yAxis);
+          ._ticks(nv.utils.calcTicksY(availableHeight/36, data))
+          .tickSize(-availableWidth, 0);
       }
 
       //Set up interactive layer
@@ -11766,13 +11686,64 @@ nv.models.multiBarChart = function() {
       //============================================================
       // Update Axes
       //============================================================
-      function updateXAxis() {
+      function updateXAxis(brushData) {
         if(showXAxis) {
+          g.select('.nv-focus .nv-x.nv-axis')
+            .attr('transform', 'translate(0,' + y.range()[0] + ')');
           g.select('.nv-focus .nv-x.nv-axis')
             .transition()
             .duration(duration)
-            .call(xAxis)
-          ;
+            .call(xAxis);
+
+          var xTicks = g.select('.nv-x.nv-axis > g').selectAll('g');
+
+          xTicks
+            .selectAll('line, text')
+            .style('opacity', 1);
+
+          if (staggerLabels) {
+            var getTranslate = function(x,y) {
+              return "translate(" + x + "," + y + ")";
+            };
+
+            var staggerUp = 5, staggerDown = 17;  //pixels to stagger by
+            // Issue #140
+            xTicks
+              .selectAll("text")
+              .attr('transform', function(d,i,j) {
+                return  getTranslate(0, (j % 2 == 0 ? staggerUp : staggerDown));
+              });
+
+            var totalInBetweenTicks = d3.selectAll(".nv-x.nv-axis .nv-wrap g g text")[0].length;
+            g.selectAll(".nv-x.nv-axis .nv-axisMaxMin text")
+              .attr("transform", function(d,i) {
+                return getTranslate(0, (i === 0 || totalInBetweenTicks % 2 !== 0) ? staggerDown : staggerUp);
+              });
+          }
+
+          if (wrapLabels) {
+            g.selectAll('.tick text')
+              .call(nv.utils.wrapTicks, chart.xAxis.rangeBand())
+          }
+
+          if (reduceXTicks) {
+            xTicks
+              .filter(function(d,i) {
+                return i % Math.ceil(brushData[0].values.length / (availableWidth / 100)) !== 0;
+              })
+              .selectAll('text, line')
+              .style('opacity', 0);
+          }
+
+          if (rotateLabels) {
+            xTicks
+              .selectAll('.tick text')
+              .attr('transform', 'rotate(' + rotateLabels + ' 0,0)')
+              .style('text-anchor', rotateLabels > 0 ? 'start' : 'end');
+          }
+
+          g.select('.nv-x.nv-axis').selectAll('g.nv-axisMaxMin text')
+            .style('opacity', 1);
         }
       }
 
@@ -11788,12 +11759,12 @@ nv.models.multiBarChart = function() {
 
       g.select('.nv-focus .nv-x.nv-axis')
         .attr('transform', 'translate(0,' + availableHeight + ')');
-
       //============================================================
       // Update Focus
       //============================================================
-
       if (!focusEnable && focus.brush.extent() === null) {
+        var barsWrap = g.select('.nv-focus .nv-barsWrap')
+          .datum(data.filter(function(d) { return !d.disabled }));
         barsWrap.transition().call(multibar);
         updateXAxis();
         updateYAxis();
@@ -11925,25 +11896,23 @@ nv.models.multiBarChart = function() {
 
       function onBrush(extent) {
         // Update Main (Focus)
-        var barsWrap = g.select('.nv-focus .nv-barsWrap')
-        barsWrap.datum(
-          data.filter(function(d) { return !d.disabled; })
-            .map(function(d,i) {
-              return {
-                key: d.key,
-                area: d.area,
-                classed: d.classed,
-                values: d.values.filter(function(d,i) {
-                  return multibar.x()(d,i) >= extent[0] && multibar.x()(d,i) <= extent[1];
-                }),
-                disableTooltip: d.disableTooltip
-              };
-            })
-        );
-        barsWrap.transition().duration(duration).call(multibar);
+        var barsWrap = g.select('.nv-focus .nv-barsWrap');
+        var brushData = data.filter(function(d) { return !d.disabled; })
+          .map(function(d,i) {
+            return {
+              key: d.key,
+              area: d.area,
+              classed: d.classed,
+              values: d.values.filter(function(d,i) {
+                return multibar.x()(d,i) >= extent[0] && multibar.x()(d,i) <= extent[1];
+              }),
+              disableTooltip: d.disableTooltip
+            };
+          });
+        barsWrap.datum(brushData).transition().duration(duration).call(multibar);
 
         // Update Main (Focus) Axes
-        updateXAxis();
+        updateXAxis(brushData);
         updateYAxis();
       }
 
@@ -17912,14 +17881,11 @@ nv.models.stackedAreaChart = function() {
           return d.color || color(d, i);
         }).filter(function(d,i) { return !data[i].disabled; }));
 
-      var stackedWrap = g.select('.nv-focus .nv-stackedWrap')
-        .datum(data.filter(function(d) { return !d.disabled; }));
-
       // Setup Axes
       if (showXAxis) {
         xAxis.scale(x)
-          ._ticks( nv.utils.calcTicksX(availableWidth/100, data) )
-          .tickSize( -availableHeight, 0);
+          ._ticks(nv.utils.calcTicksX(availableWidth/100, data))
+          .tickSize(-availableHeight, 0);
       }
 
       if (showYAxis) {
@@ -17977,6 +17943,8 @@ nv.models.stackedAreaChart = function() {
       // Update Focus
       //============================================================
       if(!focusEnable) {
+        var stackedWrap = g.select('.nv-focus .nv-stackedWrap')
+          .datum(data.filter(function(d) { return !d.disabled; }));
         stackedWrap.transition().call(stacked);
         updateXAxis();
         updateYAxis();
@@ -18171,7 +18139,6 @@ nv.models.stackedAreaChart = function() {
       //============================================================
       // Functions
       //------------------------------------------------------------
-
       function onBrush(extent) {
         // Update Main (Focus)
         var stackedWrap = g.select('.nv-focus .nv-stackedWrap')

@@ -356,7 +356,7 @@ function nvd3Vis(element, props) {
             chart.focus.margin({ bottom: 40 });
             chart.focusHeight(80);
           }
-          chart.focus.xScale(d3.time.scale.utc());
+          chart.focus.focusXScale(d3.time.scale.utc());
         } else {
           chart = nv.models.lineChart();
         }
@@ -375,7 +375,8 @@ function nvd3Vis(element, props) {
         chart = nv.models.linePlusBarChart()
           .legendRightAxisHint(' 右')
           .legendLeftAxisHint(' 左')
-          .useInteractiveGuideline(true);
+          .useInteractiveGuideline(true)
+          .xScale(d3.time.scale.utc());
         break;
 
       case 'dual_line':
@@ -403,6 +404,7 @@ function nvd3Vis(element, props) {
         if (isTimeOnly && canShowBrush) {
           chart = nv.models.multiBarWithFocusChart();
           chart.focus.stacked(isBarStacked);
+          chart.focus.focusXScale(d3.time.scale.utc());
         } else {
           chart = nv.models.multiBarChart();
         }
@@ -412,7 +414,7 @@ function nvd3Vis(element, props) {
           .reduceXTicks(reduceXTicks)
           .groupSpacing(0.1); // Distance between each group of bars.
 
-        chart.xAxis.showMaxMin(false);
+        // chart.xAxis.showMaxMin(false);
 
         chart.stacked(isBarStacked);
         if (isBarStacked) {
@@ -507,7 +509,7 @@ function nvd3Vis(element, props) {
             chart.focus.margin({ bottom: 40 });
             chart.focusHeight(80);
           }
-          chart.focus.xScale(d3.time.scale.utc());
+          chart.focus.focusXScale(d3.time.scale.utc());
         } else {
           chart = nv.models.stackedAreaChart();
         }
