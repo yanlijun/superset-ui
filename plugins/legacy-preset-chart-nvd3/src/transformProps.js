@@ -81,6 +81,7 @@ export default function transformProps(chartProps) {
     yAxisLabel,
     yAxisShowminmax,
     yLogScale,
+    isTimeOnly,
   } = formData;
 
   let {
@@ -177,5 +178,6 @@ export default function transformProps(chartProps) {
     yAxisShowMinMax: yAxisShowminmax,
     yField: y,
     yIsLogScale: yLogScale,
+    isTimeOnly,
   };
 }

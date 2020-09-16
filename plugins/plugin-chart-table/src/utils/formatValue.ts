@@ -43,7 +43,8 @@ export default function formatValue(
   value: DataRecordValue,
 ): [boolean, string] {
   if (value === null) {
-    return [false, 'N/A'];
+    // return [false, 'N/A'];
+    return [false, '0'];
   }
   if (formatter) {
     // in case percent metric can specify percent format in the future
