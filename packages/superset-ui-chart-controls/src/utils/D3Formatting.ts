@@ -25,6 +25,7 @@ export const D3_FORMAT_DOCS = 'D3 format syntax: https://github.com/d3/d3-format
 export const D3_FORMAT_OPTIONS = [
   ['SMART_NUMBER', 'Adaptative formating'],
   ['~g', 'Original value'],
+  ['中.2', '中.2 (12345.432 => 1.23万)'],
   [',d', ',d (12345.432 => 12,345)'],
   ['.1s', '.1s (12345.432 => 10k)'],
   ['.3s', '.3s (12345.432 => 12.3k)'],
@@ -40,6 +41,8 @@ export const D3_FORMAT_OPTIONS = [
 
 export const D3_TIME_FORMAT_OPTIONS = [
   ['smart_date', 'Adaptative formating'],
+  ['%Y', '%Y | 2019'],
+  ['%Y/%m', '%Y/%m | 2019/01'],
   ['%d/%m/%Y', '%d/%m/%Y | 14/01/2019'],
   ['%m/%d/%Y', '%m/%d/%Y | 01/14/2019'],
   ['%Y-%m-%d', '%Y-%m-%d | 2019-01-14'],

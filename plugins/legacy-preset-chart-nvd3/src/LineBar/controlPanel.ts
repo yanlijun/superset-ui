@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { t } from '@superset-ui/translation';
-import { sections } from '@superset-ui/chart-controls';
+import { t } from '@superset-ui/core';
+import { sections } from '../../../superset-ui-chart-controls/src';
 import { xAxisFormat, yAxis2Format } from '../NVD3Controls';
 
 export default {
