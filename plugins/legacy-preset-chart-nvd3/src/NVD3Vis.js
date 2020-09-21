@@ -26,7 +26,6 @@ import {
   t,
   isDefined,
   getTimeFormatter,
-  smartDateFormatter,
   smartDateVerboseFormatter,
   getNumberFormatter,
   NumberFormats,
@@ -596,12 +595,10 @@ function nvd3Vis(element, props) {
     }
 
     let xAxisFormatter;
-    if (isTimeSeries) {
+    if (isTimeSeries || vizType === 'line_bar' || (vizType === 'dist_bar' && isTimeOnly)) {
       xAxisFormatter = getTimeFormatter(xAxisFormat);
       // In tooltips, always use the verbose time format
       chart.interactiveLayer.tooltip.headerFormatter(smartDateVerboseFormatter);
-    } else if (vizType === 'line_bar' || (vizType === 'dist_bar' && isTimeOnly)) {
-      xAxisFormatter = xAxisFormat === 'smart_date' ? smartDateFormatter : getTimeFormatter(xAxisFormat);
     } else {
       xAxisFormatter = getTimeOrNumberFormatter(xAxisFormat);
     }

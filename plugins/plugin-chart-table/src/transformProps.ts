@@ -23,7 +23,6 @@ import {
   getNumberFormatter,
   NumberFormats,
   getTimeFormatter,
-  smartDateFormatter,
   getTimeFormatterForGranularity,
   TimeFormatter,
 } from '@superset-ui/core';
@@ -139,7 +138,7 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
       // Use granularity for "Adaptive Formatting" (smart_date)
       const timeFormat = format || tableTimestampFormat;
       formatter = getTimeFormatter(timeFormat);
-      if (timeFormat === smartDateFormatter.id) {
+      if (timeFormat === 'smart_date') {
         if (isTimeColumn(key)) {
           formatter = getTimeFormatterForGranularity(granularity);
         } else if (format) {
