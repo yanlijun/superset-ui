@@ -24,7 +24,7 @@ import {
   D3_TIME_FORMAT_OPTIONS,
   D3_FORMAT_DOCS,
   D3_FORMAT_OPTIONS,
-} from '@superset-ui/chart-controls';
+} from '@@superset-ui-chart-controls';
 
 /*
   Plugins in question:
@@ -197,7 +197,7 @@ export const xAxisFormat = {
     label: t('X Axis Format'),
     renderTrigger: true,
     choices: D3_TIME_FORMAT_OPTIONS,
-    default: 'smart_date',
+    default: '%Y/%m',
     description: D3_FORMAT_DOCS,
   },
 };

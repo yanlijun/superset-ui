@@ -27,6 +27,8 @@ import {
   barStacked,
   reduceXTicks,
   yAxisLabel,
+  showBrush,
+  xAxisFormat,
 } from '../NVD3Controls';
 
 export default {
@@ -82,6 +84,20 @@ export default {
       controlSetRows: [
         [xAxisLabel, bottomMargin],
         [xTicksLayout, reduceXTicks],
+        [
+          {
+            name: 'is_time_only',
+            config: {
+              type: 'CheckboxControl',
+              label: t('Only Time in Group by'),
+              default: false,
+              renderTrigger: true,
+              description: t('Only Time in Group by'),
+            },
+          },
+          null
+        ],
+        [showBrush, xAxisFormat]
       ],
     },
   ],
@@ -94,5 +110,8 @@ export default {
       label: t('Breakdowns'),
       description: t('Defines how each series is broken down'),
     },
+    show_brush: {
+      default: 'no',
+    }
   },
 };

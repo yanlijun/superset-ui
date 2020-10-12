@@ -18,7 +18,7 @@
  * under the License.
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
-import { sections } from '@superset-ui/chart-controls';
+import { sections } from '@@superset-ui-chart-controls';
 import {
   lineInterpolation,
   showLegend,

@@ -18,7 +18,7 @@
  * under the License.
  */
 import React from 'react';
-import { t, validateNonEmpty, addLocaleData, smartDateFormatter } from '@superset-ui/core';
+import { t, validateNonEmpty, addLocaleData } from '@superset-ui/core';
 import {
   formatSelectOptions,
   D3_TIME_FORMAT_OPTIONS,
@@ -28,7 +28,7 @@ import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
   sharedControls,
-} from '@superset-ui/chart-controls';
+} from '@@superset-ui-chart-controls';
 
 import i18n from './i18n';
 
@@ -231,7 +231,7 @@ const config: ControlPanelConfig = {
               type: 'SelectControl',
               freeForm: true,
               label: t('Table Timestamp Format'),
-              default: smartDateFormatter.id,
+              default: '%Y/%m',
               renderTrigger: true,
               validators: [validateNonEmpty],
               clearable: false,

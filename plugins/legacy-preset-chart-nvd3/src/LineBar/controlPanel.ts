@@ -18,72 +18,44 @@
  */
 import { t } from '@superset-ui/core';
 import { sections } from '@@superset-ui-chart-controls';
-import {
-  lineInterpolation,
-  showBrush,
-  showLegend,
-  showControls,
-  xAxisLabel,
-  bottomMargin,
-  xTicksLayout,
-  xAxisFormat,
-  yLogScale,
-  yAxisBounds,
-  xAxisShowMinmax,
-  richTooltip,
-  timeSeriesSection,
-} from '../NVD3Controls';
+import { xAxisFormat, yAxis2Format } from '../NVD3Controls';
 
 export default {
   controlPanelSections: [
-    timeSeriesSection[0],
     {
       label: t('Chart Options'),
       expanded: true,
-      controlSetRows: [
-        [showBrush, showLegend],
-        [
-          lineInterpolation,
-          {
-            name: 'stacked_style',
-            config: {
-              type: 'SelectControl',
-              label: t('Stacked Style'),
-              renderTrigger: true,
-              choices: [
-                ['stack', 'stack'],
-                ['stream', 'stream'],
-                ['expand', 'expand'],
-              ],
-              default: 'stack',
-              description: '',
-            },
-          },
-        ],
-        ['color_scheme', 'label_colors'],
-        [richTooltip, showControls],
-      ],
+      controlSetRows: [['color_scheme', 'label_colors'], [xAxisFormat]],
     },
     {
-      label: t('X Axis'),
+      label: t('Y Axis 1'),
       expanded: true,
-      controlSetRows: [
-        [xAxisLabel, bottomMargin],
-        [xTicksLayout, xAxisFormat],
-        [xAxisShowMinmax, null],
-      ],
+      controlSetRows: [['metric', 'y_axis_format']],
     },
     {
-      label: t('Y Axis'),
+      label: t('Y Axis 2'),
       expanded: true,
-      controlSetRows: [
-        ['y_axis_format', yAxisBounds],
-        [yLogScale, null],
-      ],
+      controlSetRows: [['metric_2', yAxis2Format]],
     },
-    timeSeriesSection[1],
+    {
+      label: t('Query'),
+      expanded: true,
+      controlSetRows: [['adhoc_filters']],
+    },
     sections.annotations,
   ],
+  controlOverrides: {
+    metric: {
+      label: t('Left Axis Metric'),
+      description: t('Choose a metric for left axis'),
+    },
+    metric_2: {
+      multi: true,
+    },
+    y_axis_format: {
+      label: t('Left Axis Format'),
+    },
+  },
   sectionOverrides: {
     druidTimeSeries: {
       controlSetRows: [['granularity', 'druid_time_origin'], ['time_range']],

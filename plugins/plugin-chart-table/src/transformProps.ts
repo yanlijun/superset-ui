@@ -23,7 +23,6 @@ import {
   getNumberFormatter,
   NumberFormats,
   getTimeFormatter,
-  smartDateFormatter,
   getTimeFormatterForGranularity,
   TimeFormatter,
 } from '@superset-ui/core';
@@ -139,7 +138,7 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
       // Use granularity for "Adaptive Formatting" (smart_date)
       const timeFormat = format || tableTimestampFormat;
       formatter = getTimeFormatter(timeFormat);
-      if (timeFormat === smartDateFormatter.id) {
+      if (timeFormat === 'smart_date') {
         if (isTimeColumn(key)) {
           formatter = getTimeFormatterForGranularity(granularity);
         } else if (format) {
@@ -152,7 +151,8 @@ const processColumns = memoizeOne(function processColumns(props: TableChartProps
       }
       dataType = DataType.DateTime;
     } else if (isMetric) {
-      formatter = getNumberFormatter(format);
+      // formatter = getNumberFormatter(format);
+      formatter = (value: number) => `${Math.round(value * 100) / 100}`;
     } else if (isPercentMetric) {
       // percent metrics have a default format
       formatter = getNumberFormatter(format || PERCENT_3_POINT);
