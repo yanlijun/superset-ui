@@ -28,7 +28,7 @@ import {
   ControlPanelConfig,
   ControlPanelsContainerProps,
   sharedControls,
-} from '@@superset-ui-chart-controls';
+} from '@@superset-ui/chart-controls';
 
 import i18n from './i18n';
 

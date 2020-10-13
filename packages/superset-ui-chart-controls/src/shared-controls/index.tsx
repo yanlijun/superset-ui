@@ -42,8 +42,13 @@ import {
   legacyValidateInteger,
   validateNonEmpty,
 } from '@superset-ui/core';
-
-import { mainMetric, formatSelectOptions } from '../utils';
+import {
+  mainMetric,
+  formatSelectOptions,
+  D3_FORMAT_OPTIONS,
+  // D3_TIME_FORMAT_OPTIONS,
+  D3_FORMAT_DOCS,
+} from '../utils';
 import { TIME_FILTER_LABELS } from '../constants';
 import {
   Metric,
@@ -53,11 +58,6 @@ import {
   SelectControlConfig,
 } from '../types';
 import { ColumnOption } from '../components/ColumnOption';
-import {
-  D3_FORMAT_OPTIONS,
-  // D3_TIME_FORMAT_OPTIONS,
-  D3_FORMAT_DOCS,
-} from '../utils/D3Formatting';
 
 const categoricalSchemeRegistry = getCategoricalSchemeRegistry();
 const sequentialSchemeRegistry = getSequentialSchemeRegistry();
