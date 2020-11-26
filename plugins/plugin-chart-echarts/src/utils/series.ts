@@ -38,6 +38,7 @@ export function extractTimeseriesSeries(
   return Object.keys(rows[0])
     .filter(key => key !== '__timestamp')
     .map(key => ({
+      id: key,
       name: key,
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -71,17 +72,17 @@ export function formatSeriesName(
 }
 
 export function extractGroupbyLabel({
-  datum,
+  datum = {},
   groupby,
   numberFormatter,
   timeFormatter,
 }: {
-  datum: DataRecord;
-  groupby: string[];
+  datum?: DataRecord;
+  groupby?: string[] | null;
   numberFormatter?: NumberFormatter;
   timeFormatter?: TimeFormatter;
 }): string {
-  return groupby
+  return (groupby || [])
     .map(val => formatSeriesName(datum[val], { numberFormatter, timeFormatter }))
     .join(', ');
 }

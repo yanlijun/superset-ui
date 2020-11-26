@@ -116,7 +116,7 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   clearable: true,
   default: [],
   includeTime: false,
-  description: t('One or many controls to group by'),
+  description: t('One or many columns to group by'),
   optionRenderer: c => <ColumnOption showType column={c} />,
   valueRenderer: c => <ColumnOption column={c} />,
   valueKey: 'column_name',
@@ -173,10 +173,11 @@ const datasourceControl: SharedControlConfig<'DatasourceControl'> = {
   label: t('Datasource'),
   default: null,
   description: null,
-  mapStateToProps: (state, control, actions) => ({
-    datasource: state.datasource,
-    onDatasourceSave: actions?.setDatasource,
-  }),
+  mapStateToProps: ({ datasource }) => {
+    return {
+      datasource,
+    };
+  },
 };
 
 const viz_type: SharedControlConfig<'VizTypeControl'> = {
@@ -225,7 +226,7 @@ const secondary_metric: SharedControlConfig<'MetricsControl'> = {
 const columnsControl: typeof groupByControl = {
   ...groupByControl,
   label: t('Columns'),
-  description: t('One or many controls to pivot as columns'),
+  description: t('One or many columns to pivot as columns'),
 };
 
 const druid_time_origin: SharedControlConfig<'SelectControl'> = {

@@ -2,7 +2,8 @@
 import { DatasourceType } from './Datasource';
 import { AdhocMetric } from './Metric';
 import { BinaryOperator, SetOperator, UnaryOperator } from './Operator';
-import { TimeRange } from './Time';
+import { AppliedTimeExtras, TimeRange } from './Time';
+import { AnnotationLayer } from './AnnotationLayer';
 import { QueryFormDataMetric, QueryFormResidualDataValue } from './QueryFormData';
 
 export type QueryObjectFilterClause = {
@@ -46,6 +47,9 @@ export type ResidualQueryObjectData = {
 };
 
 export type QueryObject = {
+  annotation_layers?: AnnotationLayer[];
+  /** Time filters that have been applied to the query object */
+  applied_time_extras?: AppliedTimeExtras;
   /** Columns to group by */
   groupby?: string[];
   /** Metrics */
@@ -80,6 +84,7 @@ export type QueryObject = {
 
   /** If set, will group by timestamp */
   is_timeseries?: boolean;
+  url_params?: Record<string, string>;
 } & TimeRange &
   ResidualQueryObjectData;
 
