@@ -20,6 +20,7 @@ import PropTypes from 'prop-types';
 import { extent as d3Extent, range as d3Range } from 'd3-array';
 import { select as d3Select } from 'd3-selection';
 import {
+  t,
   getNumberFormatter,
   getTimeFormatter,
   getSequentialSchemeRegistry,
@@ -114,7 +115,7 @@ function Calendar(element, props) {
   Object.keys(metricsData).forEach(metric => {
     const calContainer = div.append('div');
     if (showMetricName) {
-      calContainer.text(`Metric: ${verboseMap[metric] || metric}`);
+      calContainer.text(`${t('Metric')}: ${verboseMap[metric] || metric}`);
     }
     const timestamps = metricsData[metric];
     const extents = d3Extent(Object.keys(timestamps), key => timestamps[key]);

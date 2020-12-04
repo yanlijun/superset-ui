@@ -9,6 +9,8 @@
 /* eslint-disable */
 
 import d3tip from 'd3-tip';
+import { timeFormatLocale } from 'd3-time-format';
+import { t } from '@superset-ui/core';
 import './d3tip.css';
 
 var d3 = typeof require === 'function' ? require('d3') : window.d3;
@@ -550,7 +552,7 @@ var CalHeatMap = function () {
       },
       format: {
         date: '%B Week #%W',
-        legend: '%B Week #%W',
+        legend: `%B ${t('Week')} #%W`,
         connector: 'in',
       },
       extractUnit: function (d) {
@@ -1081,7 +1083,24 @@ var CalHeatMap = function () {
           return self.verticalDomainLabel ? 'middle' : 'top';
         })
         .text(function (d) {
-          return self.formatDate(new Date(d), options.domainLabelFormat);
+          // return self.formatDate(new Date(d), options.domainLabelFormat);
+          var date = new Date(d);
+          var format = options.domainLabelFormat;
+          if (typeof format === 'function') {
+            return format(date);
+          } else {
+            var formatter = timeFormatLocale({
+              dateTime: "%x, %X",
+              date: "%-m/%-d/%Y",
+              time: "%-I:%M:%S %p",
+              periods: [t('AM'), t('PM')],
+              days: [t('Sunday'), t('Monday'), t('Tuesday'), t('Wednesday'), t('Thursday'), t('Friday'), t('Saturday')],
+              shortDays: [t('Sun'), t('Mon'), t('Tue'), t('Wed'), t('Thu'), t('Fri'), t('Sat')],
+              months: [t('January'), t('February'), t('March'), t('April'), t('May'), t('June'), t('July'), t('August'), t('September'), t('October'), t('November'), t('December')],
+              shortMonths: [t('Jan'), t('Feb'), t('Mar'), t('Apr'), t('May'), t('Jun'), t('Jul'), t('Aug'), t('Sep'), t('Oct'), t('Nov'), t('Dec')]
+            });
+            return formatter.format(format)(date);
+          }
         })
         .call(domainRotate);
     }
