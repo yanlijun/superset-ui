@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { convertKeysToCamelCase, Datasource } from '../..';
-import { HandlerFunction, PlainObject } from '../types/Base';
-import { QueryData, DataRecordFilters } from '../types/QueryResponse';
+import { HandlerFunction, PlainObject, SetExtraFormDataHook } from '../types/Base';
+import { QueryData, DataRecordFilters } from '..';
 
 // TODO: more specific typing for these fields of ChartProps
 type AnnotationData = PlainObject;
@@ -23,6 +23,8 @@ type Hooks = {
   onError?: HandlerFunction;
   /** use the vis as control to update state */
   setControlValue?: HandlerFunction;
+  /** handle native filters */
+  setExtraFormData?: SetExtraFormDataHook;
   /** handle tooltip */
   setTooltip?: HandlerFunction;
 } & PlainObject;
@@ -45,8 +47,11 @@ export interface ChartPropsConfig {
   height?: number;
   /** Programmatic overrides such as event handlers, renderers */
   hooks?: Hooks;
-  /** Formerly called "payload" */
+  /** Formerly called "payload". This property going to be deprecated because
+   * contains only first item in response data array (use `queriesData` instead) */
   queryData?: QueryData;
+  /** Formerly called "payload" */
+  queriesData?: QueryData[];
   /** Chart width */
   width?: number;
 }
@@ -75,6 +80,8 @@ export default class ChartProps {
 
   queryData: QueryData;
 
+  queriesData: QueryData[];
+
   width: number;
 
   constructor(config: ChartPropsConfig = {}) {
@@ -85,6 +92,7 @@ export default class ChartProps {
       hooks = {},
       initialValues = {},
       queryData = {},
+      queriesData = [],
       width = DEFAULT_WIDTH,
       height = DEFAULT_HEIGHT,
     } = config;
@@ -98,6 +106,7 @@ export default class ChartProps {
     this.hooks = hooks;
     this.initialValues = initialValues;
     this.queryData = queryData;
+    this.queriesData = queriesData;
   }
 }
 
@@ -111,8 +120,19 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
     input => input.hooks,
     input => input.initialValues,
     input => input.queryData,
+    input => input.queriesData,
     input => input.width,
-    (annotationData, datasource, formData, height, hooks, initialValues, queryData, width) =>
+    (
+      annotationData,
+      datasource,
+      formData,
+      height,
+      hooks,
+      initialValues,
+      queryData,
+      queriesData,
+      width,
+    ) =>
       new ChartProps({
         annotationData,
         datasource,
@@ -121,6 +141,7 @@ ChartProps.createSelector = function create(): ChartPropsSelector {
         hooks,
         initialValues,
         queryData,
+        queriesData,
         width,
       }),
   );

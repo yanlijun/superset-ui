@@ -61,6 +61,7 @@ export default {
     {
       label: t('Chart Options'),
       expanded: true,
+      tabOverride: 'customize',
       controlSetRows: [
         ['linear_color_scheme'],
         [
