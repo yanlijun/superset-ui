@@ -153,7 +153,7 @@ export default styled(NVD3)`
       white-space: nowrap;
       font-weight: ${({ theme }) => theme.typography.weights.bold};
     }
-    tbody tr:not(.tooltip-header) td:nth-child(2) {
+    tbody tr:not(.tooltip-header) td:nth-of-type(2) {
       word-break: break-word;
     }
   }
@@ -167,7 +167,7 @@ export default styled(NVD3)`
     padding: 8px;
     color: #fff;
     &:after {
-      content: '\25BC';
+      content: '\\25BC';
       font-size: ${({ theme }) => theme.typography.sizes.m};
       color: #484848;
       position: absolute;

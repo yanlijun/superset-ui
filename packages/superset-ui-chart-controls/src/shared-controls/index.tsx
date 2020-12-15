@@ -324,7 +324,7 @@ const time_range: SharedControlConfig<'DateFilterControl'> = {
   type: 'DateFilterControl',
   freeForm: true,
   label: TIME_FILTER_LABELS.time_range,
-  default: t('Last week'), // this value is translated, but the backend wouldn't understand a translated value?
+  default: 'Current month', // this value is translated, but the backend wouldn't understand a translated value?
   description: t(
     'The time range for the visualization. All relative times, e.g. "Last month", ' +
       '"Last 7 days", "now", etc. are evaluated on the server using the server\'s ' +
