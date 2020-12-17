@@ -16,30 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { seedRandom } from '@superset-ui/core';
-import loadMap from '../../../../../../plugins/plugin-chart-choropleth-map/src/chart/loadMap';
+export const caches = {};
 
-const FRUITS = ['apple', 'banana', 'grape'];
+export default class Cache {
+  cache: object;
 
-export type FakeMapData = {
-  key: string;
-  favoriteFruit: string;
-  numStudents: number;
-}[];
+  constructor(key: string) {
+    caches[key] = caches[key] || {};
+    this.cache = caches[key];
+  }
 
-/**
- * Generate mock data for the given map
- * Output is a promise of an array
- * { key, favoriteFruit, numStudents }[]
- * @param map map name
- */
-export default async function generateFakeMapData(map: string) {
-  const { object, metadata } = await loadMap(map);
-  return object.features
-    .map(f => metadata.keyAccessor(f))
-    .map(key => ({
-      key,
-      favoriteFruit: FRUITS[Math.round(seedRandom() * 2)],
-      numStudents: Math.round(seedRandom() * 100),
-    }));
+  match(url: string): Promise<Response | undefined> {
+    return new Promise(resolve => resolve(this.cache[url]));
+  }
+
+  delete(url: string): Promise<boolean> {
+    delete this.cache[url];
+    return new Promise(resolve => resolve(true));
+  }
+
+  put(url: string, response: Response): Promise<void> {
+    this.cache[url] = response;
+    return Promise.resolve();
+  }
 }

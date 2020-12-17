@@ -86,7 +86,7 @@ export default class SupersetClientClass {
     }
   }
 
-  async init(force: boolean = false): CsrfPromise {
+  async init(force = false): CsrfPromise {
     if (this.isAuthenticated() && !force) {
       return this.csrfPromise as CsrfPromise;
     }
@@ -126,6 +126,7 @@ export default class SupersetClientClass {
     url,
     headers,
     timeout,
+    fetchRetryOptions,
     ...rest
   }: RequestConfig & { parseMethod?: T }) {
     await this.ensureAuth();
@@ -136,6 +137,7 @@ export default class SupersetClientClass {
       url: this.getUrl({ endpoint, host, url }),
       headers: { ...this.headers, ...headers },
       timeout: timeout ?? this.timeout,
+      fetchRetryOptions: fetchRetryOptions ?? this.fetchRetryOptions,
     });
   }
 

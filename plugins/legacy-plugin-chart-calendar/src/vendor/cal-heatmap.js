@@ -1982,7 +1982,7 @@ CalHeatMap.prototype = {
 
     newDomains = newDomains.slice(-this.options.range);
 
-    for (i = 0, total = newDomains.length; i < total; i++) {
+    for (i = 0, total = newDomains.length; i < total; i += 1) {
       this._domains.set(
         newDomains[i].getTime(),
         this.getSubDomain(newDomains[i]).map(buildSubDomain),
@@ -2453,7 +2453,7 @@ CalHeatMap.prototype = {
     // If there are 25 hours, let's compress the duplicate hours
     var i = 0;
     var total = domains.length;
-    for (i = 0; i < total; i++) {
+    for (i = 0; i < total; i += 1) {
       if (i > 0 && domains[i].getHours() === domains[i - 1].getHours()) {
         this.DSTDomain.push(domains[i].getTime());
         domains.splice(i, 1);
@@ -2679,7 +2679,7 @@ CalHeatMap.prototype = {
 
         if (startWeekNb > endWeekNb) {
           startWeekNb = 0;
-          endWeekNb++;
+          endWeekNb += 1;
         }
 
         return endWeekNb - startWeekNb + 1;
@@ -2933,7 +2933,7 @@ CalHeatMap.prototype = {
     var d = {};
     var keys = Object.keys(data[0]);
     var i, total;
-    for (i = 0, total = data.length; i < total; i++) {
+    for (i = 0, total = data.length; i < total; i += 1) {
       d[data[i][keys[0]]] = +data[i][keys[1]];
     }
     return d;
@@ -3250,7 +3250,7 @@ CalHeatMap.prototype = {
       '.qi': {},
     };
 
-    for (var j = 1, total = this.options.legend.length + 1; j <= total; j++) {
+    for (var j = 1, total = this.options.legend.length + 1; j <= total; j += 1) {
       styles['.q' + j] = {};
     }
 
@@ -3316,7 +3316,7 @@ CalHeatMap.prototype = {
       if ('getComputedStyle' in window) {
         var cs = getComputedStyle(dom, null);
         if (cs.length !== 0) {
-          for (var i = 0; i < cs.length; i++) {
+          for (var i = 0; i < cs.length; i += 1) {
             filterStyles(element, cs.item(i), cs.getPropertyValue(cs.item(i)));
           }
 
@@ -3732,7 +3732,7 @@ Legend.prototype.getClass = function (n, withCssClass) {
 
   var index = [this.calendar.options.legend.length + 1];
 
-  for (var i = 0, total = this.calendar.options.legend.length - 1; i <= total; i++) {
+  for (var i = 0, total = this.calendar.options.legend.length - 1; i <= total; i += 1) {
     if (this.calendar.options.legend[0] > 0 && n < 0) {
       index = ['1', 'i'];
       break;
@@ -3796,7 +3796,7 @@ function arrayEquals(arrayA, arrayB) {
     return false;
   }
 
-  for (var i = 0; i < arrayA.length; i++) {
+  for (var i = 0; i < arrayA.length; i += 1) {
     // Check if we have nested arrays
     if (arrayA[i] instanceof Array && arrayB[i] instanceof Array) {
       // recurse into the nested arrays
