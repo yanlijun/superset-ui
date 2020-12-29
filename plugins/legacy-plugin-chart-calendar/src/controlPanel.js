@@ -19,9 +19,9 @@
 import { t, legacyValidateInteger } from '@superset-ui/core';
 import {
   formatSelectOptions,
-  sections,
   D3_TIME_FORMAT_OPTIONS,
   D3_FORMAT_DOCS,
+  sections,
 } from '@@superset-ui/chart-controls';
 
 export default {
