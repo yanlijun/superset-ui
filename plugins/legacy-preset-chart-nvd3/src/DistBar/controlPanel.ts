@@ -17,6 +17,7 @@
  * under the License.
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
+import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
 import {
   showLegend,
   showControls,
@@ -31,8 +32,9 @@ import {
   xAxisFormat,
 } from '../NVD3Controls';
 
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
+    sections.legacyRegularTime,
     {
       label: t('Query'),
       expanded: true,
@@ -115,3 +117,5 @@ export default {
     }
   },
 };
+
+export default config;

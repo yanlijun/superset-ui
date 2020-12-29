@@ -19,12 +19,14 @@
 import { t, legacyValidateInteger } from '@superset-ui/core';
 import {
   formatSelectOptions,
+  sections,
   D3_TIME_FORMAT_OPTIONS,
   D3_FORMAT_DOCS,
 } from '@@superset-ui/chart-controls';
 
 export default {
   controlPanelSections: [
+    sections.legacyRegularTime,
     {
       label: t('Query'),
       expanded: true,

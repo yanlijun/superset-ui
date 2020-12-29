@@ -97,7 +97,7 @@ const SERIES_LIMITS = [0, 5, 10, 25, 50, 100, 500];
 // ];
 
 const timeColumnOption = {
-  verbose_name: 'Time',
+  verbose_name: t('Time'),
   column_name: '__timestamp',
   description: t('A reference to the [Time] configuration, taking granularity into account'),
 };
@@ -110,7 +110,6 @@ type Control = {
 const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
   type: 'SelectControl',
   label: t('Group by'),
-  queryField: 'groupby',
   multi: true,
   freeForm: true,
   clearable: true,
@@ -131,7 +130,7 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
     if (state.datasource) {
       const options = state.datasource.columns.filter(c => c.groupby);
       if (includeTime) {
-        options.push(timeColumnOption);
+        options.unshift(timeColumnOption);
       }
       newState.options = options;
     }
@@ -142,7 +141,6 @@ const groupByControl: SharedControlConfig<'SelectControl', ColumnMeta> = {
 
 const metrics: SharedControlConfig<'MetricsControl'> = {
   type: 'MetricsControl',
-  queryField: 'metrics',
   multi: true,
   label: t('Metrics'),
   validators: [validateNonEmpty],
