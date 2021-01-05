@@ -18,13 +18,14 @@
  */
 import { t, legacyValidateInteger } from '@superset-ui/core';
 import {
-  formatSelectOptions,
-  D3_TIME_FORMAT_OPTIONS,
+  ControlPanelConfig,
   D3_FORMAT_DOCS,
+  D3_TIME_FORMAT_OPTIONS,
+  formatSelectOptions,
   sections,
 } from '@@superset-ui/chart-controls';
 
-export default {
+const config: ControlPanelConfig = {
   controlPanelSections: [
     sections.legacyRegularTime,
     {
@@ -177,3 +178,5 @@ export default {
     },
   },
 };
+
+export default config;
