@@ -148,13 +148,11 @@ const metrics: SharedControlConfig<'MetricsControl'> = {
     const metric = mainMetric(c.savedMetrics);
     return metric ? [metric] : null;
   },
-  mapStateToProps: ({ datasource }) => {
-    return {
-      columns: datasource ? datasource.columns : [],
-      savedMetrics: datasource ? datasource.metrics : [],
-      datasourceType: datasource?.type,
-    };
-  },
+  mapStateToProps: ({ datasource }) => ({
+    columns: datasource ? datasource.columns : [],
+    savedMetrics: datasource ? datasource.metrics : [],
+    datasourceType: datasource?.type,
+  }),
   description: t('One or many metrics to display'),
 };
 
@@ -171,11 +169,9 @@ const datasourceControl: SharedControlConfig<'DatasourceControl'> = {
   label: t('Datasource'),
   default: null,
   description: null,
-  mapStateToProps: ({ datasource }) => {
-    return {
-      datasource,
-    };
-  },
+  mapStateToProps: ({ datasource }) => ({
+    datasource,
+  }),
 };
 
 const viz_type: SharedControlConfig<'VizTypeControl'> = {

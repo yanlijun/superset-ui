@@ -44,6 +44,8 @@ const config: ControlPanelConfig = {
               description: t('Based on granularity, number of time periods to compare against'),
             },
           },
+        ],
+        [
           {
             name: 'compare_suffix',
             config: {
@@ -123,6 +125,8 @@ const config: ControlPanelConfig = {
               ),
             },
           },
+        ],
+        [
           {
             name: 'rolling_periods',
             config: {
