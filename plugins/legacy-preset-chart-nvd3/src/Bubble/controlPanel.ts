@@ -22,7 +22,7 @@ import {
   formatSelectOptions,
   D3_FORMAT_OPTIONS,
   sections,
-} from '@@superset-ui/chart-controls';
+} from '@superset-ui/chart-controls';
 import {
   showLegend,
   xAxisLabel,

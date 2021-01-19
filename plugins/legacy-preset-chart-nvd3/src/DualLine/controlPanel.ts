@@ -17,7 +17,7 @@
  * under the License.
  */
 import { t } from '@superset-ui/core';
-import { ControlPanelConfig, sections } from '@@superset-ui/chart-controls';
+import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
 import { xAxisFormat, yAxis2Format } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {

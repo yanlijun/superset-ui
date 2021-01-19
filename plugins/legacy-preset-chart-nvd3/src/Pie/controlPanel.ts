@@ -17,7 +17,7 @@
  * under the License.
  */
 import { t } from '@superset-ui/core';
-import { ControlPanelConfig, D3_FORMAT_OPTIONS } from '@@superset-ui/chart-controls';
+import { ControlPanelConfig, D3_FORMAT_OPTIONS } from '@superset-ui/chart-controls';
 import { showLegend } from '../NVD3Controls';
 
 const config: ControlPanelConfig = {

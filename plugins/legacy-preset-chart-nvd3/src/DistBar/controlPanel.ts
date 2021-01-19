@@ -17,7 +17,7 @@
  * under the License.
  */
 import { t, validateNonEmpty } from '@superset-ui/core';
-import { ControlPanelConfig, sections } from '@@superset-ui/chart-controls';
+import { ControlPanelConfig, sections } from '@superset-ui/chart-controls';
 import {
   showLegend,
   showControls,
@@ -112,9 +112,6 @@ const config: ControlPanelConfig = {
       label: t('Breakdowns'),
       description: t('Defines how each series is broken down'),
     },
-    show_brush: {
-      default: 'no',
-    }
   },
 };
 

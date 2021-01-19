@@ -23,7 +23,7 @@ import {
   D3_TIME_FORMAT_OPTIONS,
   formatSelectOptions,
   sections,
-} from '@@superset-ui/chart-controls';
+} from '@superset-ui/chart-controls';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
