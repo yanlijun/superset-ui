@@ -47,7 +47,7 @@ import {
   mainMetric,
   formatSelectOptions,
   D3_FORMAT_OPTIONS,
-  // D3_TIME_FORMAT_OPTIONS,
+  D3_TIME_FORMAT_OPTIONS,
   D3_FORMAT_DOCS,
 } from '../utils';
 import { TIME_FILTER_LABELS } from '../constants';

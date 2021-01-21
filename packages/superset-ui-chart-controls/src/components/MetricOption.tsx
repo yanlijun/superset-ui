@@ -93,3 +93,5 @@ export function MetricOption({
     </FlexRowContainer>
   );
 }
+
+export default MetricOption;
