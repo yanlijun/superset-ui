@@ -701,11 +701,6 @@ function nvd3Vis(element, props) {
       chart.interactiveLayer.tooltip.contentGenerator(d =>
         generateMultiLineTooltipContent(d, xAxisFormatter, yAxisFormatters),
       );
-      if (vizType === 'dual_line') {
-        chart.showLegend(width > BREAKPOINTS.small);
-      } else {
-        chart.showLegend(showLegend);
-      }
     }
     if (vizType === 'line_bar') {
       const yAxisFormatter1 = yAxisFormatter;
