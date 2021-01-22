@@ -41,7 +41,6 @@ import {
   SequentialScheme,
   legacyValidateInteger,
   validateNonEmpty,
-  smartDateFormatter,
 } from '@superset-ui/core';
 import {
   mainMetric,
@@ -438,7 +437,7 @@ const x_axis_time_format: SharedControlConfig<'SelectControl'> = {
   freeForm: true,
   label: t('Time format'),
   renderTrigger: true,
-  default: smartDateFormatter.id,
+  default: 'smart_date',
   choices: D3_TIME_FORMAT_OPTIONS,
   description: D3_TIME_FORMAT_DOCS,
 };
